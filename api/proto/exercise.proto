@@ -1,0 +1,33 @@
+syntax = "proto3";
+
+package api;
+
+option go_package = "./api/exercisepb";
+
+service ExerciseService {
+  rpc CreateExercise(Exercise) returns (ExerciseCreatedResponse);
+  rpc GetExercises(GetExercisesRequest) returns (GetExercisesResponse);
+}
+
+message Exercise {
+  string user_id = 1;
+  string name = 2;
+  string description = 3;
+  string muscle_group = 4;
+  int32 sets_count = 5;
+  int32 reps_count = 6;
+  int64 duration = 7;
+  string difficulty = 8;
+  string type = 9;
+}
+
+message ExerciseCreatedResponse {
+  string message = 1;
+}
+
+message GetExercisesRequest {
+}
+
+message GetExercisesResponse {
+  repeated Exercise exercises = 1;
+}
