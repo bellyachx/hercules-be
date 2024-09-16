@@ -9,6 +9,9 @@ run:
 build:
 	go build -o ./build/ ./cmd/main/...
 
+test:
+	go test ./...
+
 # Database migrations
 .DB_URL=${DB_DRIVER}://${DB_USER}:${DB_PASSWORD}@${DB_HOST}:${DB_PORT}/${DB_NAME}?sslmode=disable
 MIGRATIONS_DIR=migrations

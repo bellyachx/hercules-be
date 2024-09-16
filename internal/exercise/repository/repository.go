@@ -3,24 +3,29 @@ package repository
 import (
 	"context"
 
-	exm "github.com/bellyachx/hercules-be/internal/exercise/model"
+	"github.com/bellyachx/hercules-be/internal/exercise/model"
 	"gorm.io/gorm"
 )
 
-type DBStore struct {
+type Repository interface {
+	SaveExercise(ctx context.Context, exercise *model.Exercise) error
+	GetExercises(ctx context.Context) ([]model.Exercise, error)
+}
+
+type DBRepository struct {
 	db *gorm.DB
 }
 
-func NewStore(db *gorm.DB) *DBStore {
-	return &DBStore{db: db}
+func NewRepository(db *gorm.DB) *DBRepository {
+	return &DBRepository{db: db}
 }
 
-func (d *DBStore) SaveExercise(_ context.Context, ex *exm.Exercise) error {
+func (d *DBRepository) SaveExercise(_ context.Context, ex *model.Exercise) error {
 	return d.db.Create(&ex).Error
 }
 
-func (d *DBStore) GetExercises(_ context.Context) ([]exm.Exercise, error) {
-	var exercises []exm.Exercise
+func (d *DBRepository) GetExercises(_ context.Context) ([]model.Exercise, error) {
+	var exercises []model.Exercise
 	result := d.db.Find(&exercises)
 	return exercises, result.Error
 }
