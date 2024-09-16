@@ -2,9 +2,10 @@ package service
 
 import (
 	"context"
-	"github.com/bellyachx/hercules-be/internal/common/logger"
 
+	"github.com/bellyachx/hercules-be/internal/common/logger"
 	"github.com/bellyachx/hercules-be/internal/exercise/model"
+	"github.com/bellyachx/hercules-be/internal/exercise/repository"
 	"github.com/go-playground/validator/v10"
 )
 
@@ -14,24 +15,19 @@ type Service interface {
 }
 
 type service struct {
-	store     Store
-	validator *validator.Validate
-	logger    logger.Logger
+	repository repository.Repository
+	validator  *validator.Validate
+	logger     logger.Logger
 }
 
-type Store interface {
-	SaveExercise(ctx context.Context, exercise *model.Exercise) error
-	GetExercises(ctx context.Context) ([]model.Exercise, error)
-}
-
-func NewService(store Store, log logger.Logger) Service {
+func NewService(repo repository.Repository, log logger.Logger) Service {
 	if log == nil {
 		log = logger.GetLogger()
 	}
 	return &service{
-		store:     store,
-		validator: validator.New(),
-		logger:    log,
+		repository: repo,
+		validator:  validator.New(),
+		logger:     log,
 	}
 }
 
@@ -41,7 +37,7 @@ func (s *service) CreateExercise(ctx context.Context, exercise *model.Exercise) 
 		return err
 	}
 
-	if err := s.store.SaveExercise(ctx, exercise); err != nil {
+	if err := s.repository.SaveExercise(ctx, exercise); err != nil {
 		s.logger.Errorf("failed to create exercise %v", err)
 		return err
 	}
@@ -49,7 +45,7 @@ func (s *service) CreateExercise(ctx context.Context, exercise *model.Exercise) 
 }
 
 func (s *service) GetExercises(ctx context.Context) ([]model.Exercise, error) {
-	exercises, err := s.store.GetExercises(ctx)
+	exercises, err := s.repository.GetExercises(ctx)
 	if err != nil {
 		s.logger.Errorf("failed to retrieve exercises %v", err)
 		return nil, err

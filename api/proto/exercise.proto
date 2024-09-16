@@ -4,9 +4,11 @@ package api;
 
 option go_package = "./api/exercisepb";
 
+import "google/protobuf/empty.proto";
+
 service ExerciseService {
   rpc CreateExercise(Exercise) returns (ExerciseCreatedResponse);
-  rpc GetExercises(GetExercisesRequest) returns (GetExercisesResponse);
+  rpc GetExercises(google.protobuf.Empty) returns (GetExercisesResponse);
 }
 
 message Exercise {
@@ -23,9 +25,6 @@ message Exercise {
 
 message ExerciseCreatedResponse {
   string message = 1;
-}
-
-message GetExercisesRequest {
 }
 
 message GetExercisesResponse {

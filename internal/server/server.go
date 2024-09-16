@@ -29,6 +29,9 @@ func Start(cfg *config.Config, log logger.Logger) error {
 		return err
 	}
 
+	//v := validator.New()
+	//vi := NewValidatorInterceptor(v)
+	//s := grpc.NewServer(grpc.UnaryInterceptor(vi))
 	s := grpc.NewServer()
 	reflection.Register(s)
 

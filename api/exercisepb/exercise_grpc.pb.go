@@ -7,6 +7,7 @@ import (
 	grpc "google.golang.org/grpc"
 	codes "google.golang.org/grpc/codes"
 	status "google.golang.org/grpc/status"
+	emptypb "google.golang.org/protobuf/types/known/emptypb"
 )
 
 // This is a compile-time assertion to ensure that this generated file
@@ -19,7 +20,7 @@ const _ = grpc.SupportPackageIsVersion7
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
 type ExerciseServiceClient interface {
 	CreateExercise(ctx context.Context, in *Exercise, opts ...grpc.CallOption) (*ExerciseCreatedResponse, error)
-	GetExercises(ctx context.Context, in *GetExercisesRequest, opts ...grpc.CallOption) (*GetExercisesResponse, error)
+	GetExercises(ctx context.Context, in *emptypb.Empty, opts ...grpc.CallOption) (*GetExercisesResponse, error)
 }
 
 type exerciseServiceClient struct {
@@ -39,7 +40,7 @@ func (c *exerciseServiceClient) CreateExercise(ctx context.Context, in *Exercise
 	return out, nil
 }
 
-func (c *exerciseServiceClient) GetExercises(ctx context.Context, in *GetExercisesRequest, opts ...grpc.CallOption) (*GetExercisesResponse, error) {
+func (c *exerciseServiceClient) GetExercises(ctx context.Context, in *emptypb.Empty, opts ...grpc.CallOption) (*GetExercisesResponse, error) {
 	out := new(GetExercisesResponse)
 	err := c.cc.Invoke(ctx, "/api.ExerciseService/GetExercises", in, out, opts...)
 	if err != nil {
@@ -53,7 +54,7 @@ func (c *exerciseServiceClient) GetExercises(ctx context.Context, in *GetExercis
 // for forward compatibility
 type ExerciseServiceServer interface {
 	CreateExercise(context.Context, *Exercise) (*ExerciseCreatedResponse, error)
-	GetExercises(context.Context, *GetExercisesRequest) (*GetExercisesResponse, error)
+	GetExercises(context.Context, *emptypb.Empty) (*GetExercisesResponse, error)
 	mustEmbedUnimplementedExerciseServiceServer()
 }
 
@@ -64,7 +65,7 @@ type UnimplementedExerciseServiceServer struct {
 func (UnimplementedExerciseServiceServer) CreateExercise(context.Context, *Exercise) (*ExerciseCreatedResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method CreateExercise not implemented")
 }
-func (UnimplementedExerciseServiceServer) GetExercises(context.Context, *GetExercisesRequest) (*GetExercisesResponse, error) {
+func (UnimplementedExerciseServiceServer) GetExercises(context.Context, *emptypb.Empty) (*GetExercisesResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method GetExercises not implemented")
 }
 func (UnimplementedExerciseServiceServer) mustEmbedUnimplementedExerciseServiceServer() {}
@@ -99,7 +100,7 @@ func _ExerciseService_CreateExercise_Handler(srv interface{}, ctx context.Contex
 }
 
 func _ExerciseService_GetExercises_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(GetExercisesRequest)
+	in := new(emptypb.Empty)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
@@ -111,7 +112,7 @@ func _ExerciseService_GetExercises_Handler(srv interface{}, ctx context.Context,
 		FullMethod: "/api.ExerciseService/GetExercises",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(ExerciseServiceServer).GetExercises(ctx, req.(*GetExercisesRequest))
+		return srv.(ExerciseServiceServer).GetExercises(ctx, req.(*emptypb.Empty))
 	}
 	return interceptor(ctx, in, info, handler)
 }
