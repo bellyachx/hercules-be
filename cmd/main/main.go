@@ -1,58 +1,27 @@
 package main
 
 import (
-	"github.com/bellyachx/hercules-be/internal/exercise"
-	exsrv "github.com/bellyachx/hercules-be/internal/exercise/server"
-	"github.com/bellyachx/hercules-be/internal/infrastructure/db"
-	exm "github.com/bellyachx/hercules-be/internal/model/exercise"
-	"github.com/joho/godotenv"
-	"google.golang.org/grpc"
-	"google.golang.org/grpc/reflection"
+	"github.com/bellyachx/hercules-be/internal/common/logger"
 	"log"
-	"net"
 	"os"
+
+	"github.com/bellyachx/hercules-be/config"
+	"github.com/bellyachx/hercules-be/internal/server"
+	"github.com/joho/godotenv"
 )
 
 func main() {
 	if err := godotenv.Load(); err != nil {
 		log.Println(".env not found")
 	}
-	if err := run(); err != nil {
-		log.Fatalln("failed to start server")
+
+	cfg := config.NewConfig()
+
+	logger.Init(cfg.Logging.Level)
+	defer logger.Sync()
+
+	if err := server.Start(cfg, logger.GetLogger()); err != nil {
+		logger.GetLogger().Fatalf("Server failed to start: %v", err)
+		os.Exit(-1)
 	}
-}
-
-func run() error {
-	port, exists := os.LookupEnv("PORT")
-	port = ":" + port
-	if !exists {
-		port = ":8080"
-	}
-	listener, err := net.Listen("tcp", ":8080")
-	if err != nil {
-		log.Fatalln("failed to create listener", err)
-	}
-
-	s := grpc.NewServer()
-	defer s.GracefulStop()
-	reflection.Register(s)
-
-	initServer(s)
-
-	return s.Serve(listener)
-}
-
-func initServer(s *grpc.Server) {
-	dbConn, err := db.Open()
-	if err != nil {
-		log.Fatalln("cannot connect to db", err)
-	}
-	err = dbConn.AutoMigrate(&exm.Exercise{})
-	if err != nil {
-		log.Fatalln("automigrate failed", err)
-	}
-
-	store := exercise.NewStore(dbConn)
-	service := exercise.NewService(store)
-	exsrv.RegisterServer(s, service)
 }
