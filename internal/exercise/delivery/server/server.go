@@ -49,7 +49,7 @@ func (s *server) CreateExercise(ctx context.Context, exercise *exercisepb.Exerci
 	if err != nil {
 		var validationErrors validator.ValidationErrors
 		if errors.As(err, &validationErrors) {
-			return nil, status.Errorf(codes.InvalidArgument, err.Error())
+			return nil, status.Errorf(codes.InvalidArgument, "%v", err)
 		}
 		return nil, status.Errorf(codes.Internal, "failed to create exercise: %v", err)
 	}
