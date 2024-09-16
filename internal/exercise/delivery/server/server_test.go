@@ -169,7 +169,7 @@ func Test_server_GetExercises(t *testing.T) {
 			s := &server{
 				service: mockService,
 			}
-			got, err := s.GetExercises(nil, nil)
+			got, err := s.GetExercises(context.Background(), nil)
 			if tt.wantErr != nil {
 				assert.Error(t, err)
 				require.Nil(t, got)
